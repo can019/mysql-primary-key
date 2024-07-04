@@ -17,14 +17,52 @@ repositories {
 	mavenCentral()
 }
 
+sourceSets {
+	integrationTest {
+		java.srcDir "$projectDir/src/integration/java"
+		resources.srcDir "$projectDir/src/integration/resources"
+		compileClasspath += main.output + test.output
+		runtimeClasspath += main.output + test.output
+	}
+
+	unitTest {
+		java.srcDir "$projectDir/src/unit/java"
+		resources.srcDir "$projectDir/src/unit/resources"
+		compileClasspath += main.output + test.output
+		runtimeClasspath += main.output + test.output
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	integrationTestImplementation.extendsFrom implementation
+	integrationTestImplementation.extendsFrom testImplementation
+	integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+
+	unitTestImplementation.extendsFrom implementation
+	unitTestImplementation.extendsFrom testImplementation
+	unitTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// uuid-v1
+	implementation 'com.fasterxml.uuid:java-uuid-generator:5.0.0'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+task integrationTest(type: Test) {
+	testClassesDirs = sourceSets.integrationTest.output.classesDirs
+	classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+task unitTest(type: Test) {
+	testClassesDirs = sourceSets.unitTest.output.classesDirs
+	classpath = sourceSets.unitTest.runtimeClasspath
 }
