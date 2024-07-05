@@ -32,7 +32,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @TestExecutionListeners(value = {TestTimeExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Commit
-public class PrimaryKeyPerformanceTest {
+public class PrimaryKeyPerformanceTestSingleThread {
 
     @PersistenceContext
     private EntityManager em;
