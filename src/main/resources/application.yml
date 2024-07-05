@@ -1,0 +1,16 @@
+spring:
+  application:
+  name:
+    mysql-primary-key-test
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:tc:mysql:8.0.32:///test
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  jpa:
+    hibernate:
+      ddl-auto: create
+

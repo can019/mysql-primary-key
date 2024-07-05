@@ -17,6 +17,11 @@ repositories {
 	mavenCentral()
 }
 
+tasks.withType(Test){
+	useJUnitPlatform()
+	maxParallelForks = Runtime.runtime.availableProcessors()
+}
+
 sourceSets {
 	integrationTest {
 		java.srcDir "$projectDir/src/integration/java"
@@ -48,13 +53,23 @@ configurations {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+	implementation 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	// uuid-v1
 	implementation 'com.fasterxml.uuid:java-uuid-generator:5.0.0'
+
+	testImplementation "org.testcontainers:mysql:1.19.8"
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.32'
+	testImplementation "org.testcontainers:mysql:1.19.8"
+	testImplementation "org.testcontainers:testcontainers:1.19.8"
+	testImplementation "org.testcontainers:junit-jupiter:1.19.8"
 }
 
 task integrationTest(type: Test) {
@@ -66,3 +81,6 @@ task unitTest(type: Test) {
 	testClassesDirs = sourceSets.unitTest.output.classesDirs
 	classpath = sourceSets.unitTest.runtimeClasspath
 }
+
+check.dependsOn integrationTest
+check.dependsOn unitTest
