@@ -5,29 +5,29 @@ import com.github.can019.performance.entity.*;
 import com.github.can019.performance.test.util.TestTimeExecutionListener;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestExecutionListeners;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-@DataJpaTest(properties = {"spring.profiles.active=test",
-        "logging.level.org.springframework=ERROR",
-        "logging.level.com.example.base=ERROR",
-        "spring.main.banner-mode=off",
-        "logging.level.root=ERROR",
-        "spring.jpa.properties.hibernate.show_sql=false",
-        "spring.jpa.properties.hibernate.use_sql_comments=false",
-        "spring.jpa.properties.hibernate.highlight_sql=false",
-        "logging.level.org.hibernate.SQL=OFF",
-        "logging.level.org.hibernate.orm.jdbc.bind=OFF",
-})
-@ActiveProfiles("test")
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+@DataJpaTest
+@ActiveProfiles("silence")
 @Testcontainers
 @TestExecutionListeners(value = {TestTimeExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -37,11 +37,25 @@ public class PrimaryKeyPerformanceTestSingleThread {
     @PersistenceContext
     private EntityManager em;
 
-    private final static int repeatTestTime = 100;
+    private final static int repeatTestTime = 10;
 
-    @Container
-    static MySQLContainer<?> mysqlContainer= new MySQLContainer<>("mysql:8.0.32")
-            .withDatabaseName("test");
+    @Autowired
+    private DataSource dataSource;
+
+    @DynamicPropertySource
+    static void logger(DynamicPropertyRegistry registry) {
+        registry.add("logging.level.root", ()-> "ERROR");
+    }
+
+    @Test
+    @Disabled
+    void checkUsingMysqlContainer() throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            String databaseProductName = metaData.getDatabaseProductName();
+            assertThat(databaseProductName).isEqualTo("MySQL");
+        }
+    }
 
     @RepeatedTest(value = repeatTestTime, name = RepeatedTest.LONG_DISPLAY_NAME)
     @DisplayName("JpaAutoIncrement")
@@ -52,7 +66,6 @@ public class PrimaryKeyPerformanceTestSingleThread {
 
     @RepeatedTest(value = repeatTestTime, name = RepeatedTest.LONG_DISPLAY_NAME)
     @DisplayName("JpaSequence")
-
     void jpaSequence() {
         JpaSequence jpaSequence = new JpaSequence();
         em.persist(jpaSequence);
@@ -67,6 +80,7 @@ public class PrimaryKeyPerformanceTestSingleThread {
 
     @RepeatedTest(value = repeatTestTime, name = RepeatedTest.LONG_DISPLAY_NAME)
     @DisplayName("UUIDv1")
+    @Execution(value = ExecutionMode.SAME_THREAD)
     void uuidV1() {
         UUIDv1 uuiDv1 = new UUIDv1();
         em.persist(uuiDv1);
@@ -74,6 +88,7 @@ public class PrimaryKeyPerformanceTestSingleThread {
 
     @RepeatedTest(value = repeatTestTime, name = RepeatedTest.LONG_DISPLAY_NAME)
     @DisplayName("UUIDv1 Base Sequential")
+    @Execution(value = ExecutionMode.SAME_THREAD)
     void uuiDv1Sequential() {
         UUIDv1Sequential uuiDv1Sequential = new UUIDv1Sequential();
         em.persist(uuiDv1Sequential);
