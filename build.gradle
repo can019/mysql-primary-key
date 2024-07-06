@@ -66,10 +66,19 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.32'
-	testImplementation "org.testcontainers:mysql:1.19.8"
-	testImplementation "org.testcontainers:testcontainers:1.19.8"
-	testImplementation "org.testcontainers:junit-jupiter:1.19.8"
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	testImplementation "org.testcontainers:mysql"
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+
+
+	// Logback을 log4j2로 대체
+	implementation("org.springframework.boot:spring-boot-starter-log4j2")
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
+	modules {
+		module("org.springframework.boot:spring-boot-starter-logging") {
+			replacedBy("org.springframework.boot:spring-boot-starter-log4j2")
+		}
+	}
 }
 
 task integrationTest(type: Test) {
