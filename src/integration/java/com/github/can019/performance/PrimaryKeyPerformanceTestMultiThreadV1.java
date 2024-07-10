@@ -17,8 +17,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.util.StopWatch;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @DataJpaTest
@@ -27,7 +25,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @TestExecutionListeners(value = {ParallelTestTimeExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(PrimaryKeyPerformanceTestMultiThreadInternal.class)
-public class PrimaryKeyPerformanceTestMultiThread {
+public class PrimaryKeyPerformanceTestMultiThreadV1 {
 
     @PersistenceContext
     EntityManager em;
