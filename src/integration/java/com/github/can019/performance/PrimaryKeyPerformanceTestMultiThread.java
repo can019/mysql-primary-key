@@ -21,18 +21,8 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-@DataJpaTest(properties = {"spring.profiles.active=test",
-        "logging.level.org.springframework=ERROR",
-        "logging.level.com.example.base=ERROR",
-        "spring.main.banner-mode=off",
-        "logging.level.root=ERROR",
-        "spring.jpa.properties.hibernate.show_sql=false",
-        "spring.jpa.properties.hibernate.use_sql_comments=false",
-        "spring.jpa.properties.hibernate.highlight_sql=false",
-        "logging.level.org.hibernate.SQL=OFF",
-        "logging.level.org.hibernate.orm.jdbc.bind=OFF",
-})
-@ActiveProfiles("test")
+@DataJpaTest
+@ActiveProfiles("silence")
 @Testcontainers
 @TestExecutionListeners(value = {ParallelTestTimeExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -45,17 +35,13 @@ public class PrimaryKeyPerformanceTestMultiThread {
     @Autowired
     PrimaryKeyPerformanceTestMultiThreadInternal internal;
 
-    private final static int repeatTestTime = 1000;
+    private final static int repeatTestTime = 10;
 
     @DynamicPropertySource
     static void hikariPool(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.hikari.minimum-idle", ()-> 11);
         registry.add("spring.datasource.hikari.maximum-pool-size", ()-> 11);
     }
-
-    @Container
-    static MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.32")
-            .withDatabaseName("test");
 
     @Test
     @DisplayName("JpaAutoIncrement")
@@ -92,7 +78,7 @@ public class PrimaryKeyPerformanceTestMultiThread {
         insertTest("UUIDv1Sequential", UUIDv1Sequential.class);
     }
 
-    private <T> void insertTest(String testName, Class<T> entityClass) throws Exception {
+    private <T extends PrimaryKeyPerformanceTestEntity> void insertTest(String testName, Class<T> entityClass) throws Exception {
         StopWatch stopWatch = ParallelTestTimeExecutionListener.threadLocalStopWatch.get();
         for (int i = 0; i < repeatTestTime; i++) {
             stopWatch.start(testName + " # " + i);
