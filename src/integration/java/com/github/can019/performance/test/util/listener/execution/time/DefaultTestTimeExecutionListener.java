@@ -1,10 +1,16 @@
-package com.github.can019.performance.test.util;
+package com.github.can019.performance.test.util.listener.execution.time;
 
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 import org.springframework.util.StopWatch;
 
-public abstract class AbstractTestTimeExecutionListener extends AbstractTestExecutionListener {
+/**
+ * 총 수행시간을 측정하는 listener
+ *
+ * @author jys01012@gmail.com
+ * @version 1.0
+ */
+public class DefaultTestTimeExecutionListener extends AbstractTestExecutionListener {
     private StopWatch totalTaskStopWatch;
 
     @Override
@@ -13,13 +19,6 @@ public abstract class AbstractTestTimeExecutionListener extends AbstractTestExec
         System.out.println("Running test '" + testContext.getTestClass().getSimpleName() + "'...");
         totalTaskStopWatch = new StopWatch(testContext.getTestClass().getSimpleName()+ " Total");
         totalTaskStopWatch.start("Total");
-    }
-
-
-    @Override
-    public void beforeTestMethod(TestContext testContext) throws Exception {
-        super.beforeTestMethod(testContext);
-        Thread.currentThread().setName(testContext.getTestMethod().getName());
     }
 
     @Override

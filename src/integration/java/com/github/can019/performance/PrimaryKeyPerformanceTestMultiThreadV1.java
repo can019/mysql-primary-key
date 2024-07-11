@@ -1,7 +1,7 @@
 package com.github.can019.performance;
 
 import com.github.can019.performance.entity.*;
-import com.github.can019.performance.test.util.ParallelTestTimeExecutionListener;
+import com.github.can019.performance.test.util.listener.execution.time.ParallelTestTimeExecutionExportListener;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.DisplayName;
@@ -22,13 +22,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @DataJpaTest
 @ActiveProfiles("silence")
 @Testcontainers
-@TestExecutionListeners(value = {ParallelTestTimeExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
+@TestExecutionListeners(value = {ParallelTestTimeExecutionExportListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import(PrimaryKeyPerformanceTestMultiThreadInternal.class)
 public class PrimaryKeyPerformanceTestMultiThreadV1 {
-
-    @PersistenceContext
-    EntityManager em;
 
     @Autowired
     PrimaryKeyPerformanceTestMultiThreadInternal internal;
@@ -77,7 +74,7 @@ public class PrimaryKeyPerformanceTestMultiThreadV1 {
     }
 
     private <T extends PrimaryKeyPerformanceTestEntity> void insertTest(String testName, Class<T> entityClass) throws Exception {
-        StopWatch stopWatch = ParallelTestTimeExecutionListener.threadLocalStopWatch.get();
+        StopWatch stopWatch = ParallelTestTimeExecutionExportListener.threadLocalStopWatch.get();
         for (int i = 0; i < repeatTestTime; i++) {
             stopWatch.start(testName + " # " + i);
             internal.persistEntity(entityClass);

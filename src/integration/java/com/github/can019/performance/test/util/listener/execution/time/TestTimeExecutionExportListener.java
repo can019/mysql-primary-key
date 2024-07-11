@@ -1,11 +1,15 @@
-package com.github.can019.performance.test.util;
+package com.github.can019.performance.test.util.listener.execution.time;
 
 import org.springframework.test.context.TestContext;
 import org.springframework.util.StopWatch;
 
 import java.util.UUID;
 
-public class TestTimeExecutionListener extends AbstractTestTimeExecutionListener {
+/**
+ * Non thread safe
+ * `@Execution(value = ExecutionMode.SAME_THREAD)`에서만 사용 가능
+ */
+public class TestTimeExecutionExportListener extends DefaultTestTimeExecutionListener {
 
     private StopWatch stopWatch;
 
@@ -29,13 +33,7 @@ public class TestTimeExecutionListener extends AbstractTestTimeExecutionListener
         super.afterTestMethod(testContext);
     }
 
-    @Override
-    public void afterTestClass(TestContext testContext) throws Exception {
-        super.afterTestClass(testContext);
-        System.out.println("Test '" + testContext.getTestClass().getSimpleName() + "' finished after " + stopWatch.getTotalTimeSeconds() + " seconds.");
-    }
-
-    private String exportCsvPathResolver(TestContext testContext){
+    private String exportCsvPathResolver(TestContext testContext) {
         String packageName = testContext.getTestClass().getPackageName();
         String className = testContext.getTestClass().getSimpleName();
         String csvFilePath = "./test/reports/" + packageName
