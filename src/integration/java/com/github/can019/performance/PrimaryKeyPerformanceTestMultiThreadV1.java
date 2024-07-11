@@ -1,6 +1,7 @@
 package com.github.can019.performance;
 
 import com.github.can019.performance.entity.*;
+import com.github.can019.performance.identifier.IdentifierStrategy;
 import com.github.can019.performance.test.util.listener.execution.time.ParallelTestTimeExecutionExportListener;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -42,41 +43,41 @@ public class PrimaryKeyPerformanceTestMultiThreadV1 {
     @DisplayName("JpaAutoIncrement")
     @Execution(ExecutionMode.CONCURRENT)
     public void jpaAutoIncrement() throws Exception {
-        insertTest("JpaAutoIncrement", JpaAutoIncrement.class);
+        insertTest(IdentifierStrategy.JPA_AUTO_INCREMENT, JpaAutoIncrement.class);
     }
 
     @Test
     @DisplayName("JpaSequence")
     @Execution(ExecutionMode.CONCURRENT)
     public void jpaSequence() throws Exception {
-        insertTest("JpaSequence", JpaSequence.class);
+        insertTest(IdentifierStrategy.JPA_SEQUENCE, JpaSequence.class);
     }
 
     @Test
     @DisplayName("UUIDv4")
     @Execution(ExecutionMode.CONCURRENT)
     public void uuidV4() throws Exception {
-        insertTest("UUIDv4", UUIDv4.class);
+        insertTest(IdentifierStrategy.UUID_V4, UUIDv4.class);
     }
 
     @Test
     @DisplayName("UUIDv1")
     @Execution(ExecutionMode.CONCURRENT)
     public void uuidV1() throws Exception {
-        insertTest("UUIDv1", UUIDv1.class);
+        insertTest(IdentifierStrategy.UUID_V1, UUIDv1.class);
     }
 
     @Test
     @DisplayName("UUIDv1 Base Sequential")
     @Execution(ExecutionMode.CONCURRENT)
     public void uuidV1BaseSequentialNoHyphen() throws Exception {
-        insertTest("UUIDv1Sequential", UUIDv1Sequential.class);
+        insertTest(IdentifierStrategy.UUID_V1_SEQUENTIAL, UUIDv1Sequential.class);
     }
 
-    private <T extends PrimaryKeyPerformanceTestEntity> void insertTest(String testName, Class<T> entityClass) throws Exception {
+    private <T extends PrimaryKeyPerformanceTestEntity> void insertTest(IdentifierStrategy identifierStrategy, Class<T> entityClass) throws Exception {
         StopWatch stopWatch = ParallelTestTimeExecutionExportListener.threadLocalStopWatch.get();
         for (int i = 0; i < repeatTestTime; i++) {
-            stopWatch.start(testName + " # " + i);
+            stopWatch.start(identifierStrategy.getSimpleName() + " # " + i);
             internal.persistEntity(entityClass);
             stopWatch.stop();
         }
