@@ -45,10 +45,12 @@ configurations {
 	integrationTestImplementation.extendsFrom implementation
 	integrationTestImplementation.extendsFrom testImplementation
 	integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+	integrationTestAnnotationProcessor.extendsFrom testAnnotationProcessor
 
 	unitTestImplementation.extendsFrom implementation
 	unitTestImplementation.extendsFrom testImplementation
 	unitTestRuntimeOnly.extendsFrom testRuntimeOnly
+	unitTestAnnotationProcessor.extendsFrom testAnnotationProcessor
 }
 
 dependencies {
@@ -79,6 +81,11 @@ dependencies {
 			replacedBy("org.springframework.boot:spring-boot-starter-log4j2")
 		}
 	}
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok' // 테스트를 위한 세팅
+	testImplementation 'org.projectlombok:lombok' // 테스트를 위한 세팅
 }
 
 task integrationTest(type: Test) {

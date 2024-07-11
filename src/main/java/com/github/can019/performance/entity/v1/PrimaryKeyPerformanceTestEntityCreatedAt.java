@@ -6,4 +6,5 @@ import java.time.LocalDateTime;
 
 public interface PrimaryKeyPerformanceTestEntityWithCreatedAt<T> extends PrimaryKeyPerformanceTestEntity<T> {
     public LocalDateTime getLocalDateTime();
+    public String getId();
 }

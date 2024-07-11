@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class JpaSequenceWithCreatedTimeWithCreatedAt implements PrimaryKeyPerformanceTestEntityWithCreatedAt {
+@Table(name="jpa_sequence_with_created_at",
+        indexes = {@Index(name = "idx_created_at", columnList = "created_at")})
+public class JpaSequenceWithCreatedTimeWithCreatedAt implements PrimaryKeyPerformanceTestEntityWithCreatedAt<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     public Long id;
@@ -16,5 +18,10 @@ public class JpaSequenceWithCreatedTimeWithCreatedAt implements PrimaryKeyPerfor
     @Override
     public LocalDateTime getLocalDateTime(){
         return this.createdAt;
+    }
+
+    @Override
+    public String getId(){
+        return this.id.toString();
     }
 }

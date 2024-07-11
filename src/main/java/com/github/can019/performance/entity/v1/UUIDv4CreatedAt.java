@@ -7,7 +7,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-public class UUIDv4WithCreatedTimeWithCreatedAt implements PrimaryKeyPerformanceTestEntityWithCreatedAt {
+@Table(name=" uuidv4_with_created_at",
+        indexes = {@Index(name = "idx_created_at", columnList = "created_at")})
+public class UUIDv4WithCreatedTimeWithCreatedAt implements PrimaryKeyPerformanceTestEntityWithCreatedAt<UUID> {
     @Id
     @Column(name="ID",columnDefinition = "BINARY(16)")
     @GeneratedValue(generator = "uuidV4")
@@ -23,5 +25,10 @@ public class UUIDv4WithCreatedTimeWithCreatedAt implements PrimaryKeyPerformance
     @Override
     public LocalDateTime getLocalDateTime(){
         return this.createdAt;
+    }
+
+    @Override
+    public String getId() {
+        return this.id.toString();
     }
 }
