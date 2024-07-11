@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name="jpa_auto_increment_with_created_at",
         indexes = {@Index(name = "idx_created_at", columnList = "created_at")})
-public class JpaAutoIncrementWithCreatedTimeWithCreatedAt implements PrimaryKeyPerformanceTestEntityWithCreatedAt<Long> {
+public class JpaAutoIncrementCreatedAt implements PrimaryKeyPerformanceTestEntityCreatedAt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
@@ -15,11 +15,6 @@ public class JpaAutoIncrementWithCreatedTimeWithCreatedAt implements PrimaryKeyP
 
     @Column(name = "created_at", updatable = false, insertable = false)
     private LocalDateTime createdAt;
-
-    @Override
-    public LocalDateTime getLocalDateTime(){
-        return this.createdAt;
-    }
 
     @Override
     public String getId() {
