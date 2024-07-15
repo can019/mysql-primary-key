@@ -42,17 +42,13 @@ import static com.github.can019.performance.test.util.report.ReportPath.getTestR
 @Commit
 @Slf4j
 public class PrimaryKeyPerformanceTestMultiThreadV2 {
-
-    @PersistenceContext
-    EntityManager em;
-
     @Autowired
     PrimaryKeyPerformanceTestMultiThreadInternal internal;
 
     private final static int repeatTestTime = 3; // ForkJoinPool thread 개수 / Test method 개수
-    private final int totalInsertTime = 1000000;
+    private final int totalInsertTime = 10;
     private final int iteration = totalInsertTime / repeatTestTime;
-    private final int testCount = getTotalRepeatedTestMethodCount();
+    private static final int testCount = getTotalRepeatedTestMethodCount();
     private final int actualInsertTime = iteration * repeatTestTime;
     private final int forkJonPoolThreads = ForkJoinPool.getCommonPoolParallelism();
 
@@ -71,8 +67,8 @@ public class PrimaryKeyPerformanceTestMultiThreadV2 {
 
     @DynamicPropertySource
     static void hikariPool(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.hikari.minimum-idle", ()-> 30);
-        registry.add("spring.datasource.hikari.maximum-pool-size", ()-> 30);
+        registry.add("spring.datasource.hikari.minimum-idle", ()-> 31);
+        registry.add("spring.datasource.hikari.maximum-pool-size", ()-> 31);
     }
 
     @BeforeAll
@@ -245,7 +241,7 @@ public class PrimaryKeyPerformanceTestMultiThreadV2 {
         log.info("!! Optimal parameter > ActualTotalInsertTime: {}", actualInsertTime);
 
         if(actualInsertTime != totalInsertTime){
-            log.warn("!! ActualTotalInsertTime is [{}] TotalInsertTime", Runtime.getRuntime().availableProcessors());
+            log.warn("!! ActualTotalInsertTime is [{}] TotalInsertTime", actualInsertTime);
         }
     }
 }
