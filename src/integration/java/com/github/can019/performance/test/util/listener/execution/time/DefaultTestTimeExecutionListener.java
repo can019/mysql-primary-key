@@ -1,5 +1,6 @@
 package com.github.can019.performance.test.util.listener.execution.time;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 import org.springframework.util.StopWatch;
@@ -10,13 +11,14 @@ import org.springframework.util.StopWatch;
  * @author jys01012@gmail.com
  * @version 1.0
  */
+@Slf4j
 public class DefaultTestTimeExecutionListener extends AbstractTestExecutionListener {
     private StopWatch totalTaskStopWatch;
 
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
         super.beforeTestClass(testContext);
-        System.out.println("Running test '" + testContext.getTestClass().getSimpleName() + "'...");
+        log.info("Running test '{testContext.getTestClass().getSimpleName() }'...");
         totalTaskStopWatch = new StopWatch(testContext.getTestClass().getSimpleName()+ " Total");
         totalTaskStopWatch.start("Total");
     }
@@ -26,7 +28,7 @@ public class DefaultTestTimeExecutionListener extends AbstractTestExecutionListe
         super.afterTestClass(testContext);
         totalTaskStopWatch.stop();
 
-        System.out.println("The test in '" + testContext.getTestClass().getSimpleName()+"' has been completed");
-        System.out.println(totalTaskStopWatch.prettyPrint());
+        log.info("The test in '{}' has been completed",testContext.getTestClass().getSimpleName());
+        log.info(totalTaskStopWatch.prettyPrint());
     }
 }
