@@ -89,6 +89,13 @@ Configuration:
           - ref: console-appender
           - ref: file-info-appender
           - ref: file-error-appender
+      - name: com.github.can019.performance.test
+        additivity: "false"
+        level: INFO
+        AppenderRef:
+          - ref: console-appender
+          - ref: file-info-appender
+          - ref: file-error-appender
       # 3 JPA
       - name: com.zaxxer.hikari
         level: OFF
