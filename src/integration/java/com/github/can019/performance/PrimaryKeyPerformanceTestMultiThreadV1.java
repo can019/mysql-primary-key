@@ -3,8 +3,7 @@ package com.github.can019.performance;
 import com.github.can019.performance.entity.*;
 import com.github.can019.performance.identifier.IdentifierStrategy;
 import com.github.can019.performance.test.util.listener.execution.time.ParallelTestTimeExecutionExportListener;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import com.github.can019.performance.test.util.stopwatch.StopWatchUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -77,7 +76,7 @@ public class PrimaryKeyPerformanceTestMultiThreadV1 {
     private <T extends PrimaryKeyPerformanceTestEntity> void insertTest(IdentifierStrategy identifierStrategy, Class<T> entityClass) throws Exception {
         StopWatch stopWatch = ParallelTestTimeExecutionExportListener.threadLocalStopWatch.get();
         for (int i = 0; i < repeatTestTime; i++) {
-            stopWatch.start(identifierStrategy.getSimpleName() + " # " + i);
+            stopWatch.start(identifierStrategy.getSimpleName() + StopWatchUtil.Helper.TASK_NUM_DELIMINATOR.getValue() + i);
             internal.persistEntity(entityClass);
             stopWatch.stop();
         }
