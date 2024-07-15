@@ -84,7 +84,14 @@ Configuration:
       # 2. Spring Framework 로그 레벨 'DEBUG' 정의
       - name: com.github.can019
         additivity: "false"
-        level: OFF
+        level: WARN
+        AppenderRef:
+          - ref: console-appender
+          - ref: file-info-appender
+          - ref: file-error-appender
+      - name: com.github.can019.performance.test
+        additivity: "false"
+        level: INFO
         AppenderRef:
           - ref: console-appender
           - ref: file-info-appender

@@ -2,10 +2,9 @@ package com.github.can019.performance;
 
 
 import com.github.can019.performance.entity.*;
-import com.github.can019.performance.test.util.TestTimeExecutionListener;
+import com.github.can019.performance.test.util.listener.execution.time.TestTimeExecutionExportListener;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -29,10 +28,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 @ActiveProfiles("silence")
 @Testcontainers
-@TestExecutionListeners(value = {TestTimeExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
+@TestExecutionListeners(value = {TestTimeExecutionExportListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Commit
-public class PrimaryKeyPerformanceTest {
+public class PrimaryKeyPerformanceTestSingleThread {
 
     @PersistenceContext
     private EntityManager em;

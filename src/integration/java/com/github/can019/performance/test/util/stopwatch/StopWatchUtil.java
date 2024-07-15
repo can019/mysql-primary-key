@@ -5,12 +5,26 @@ import org.springframework.util.StopWatch;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static com.github.can019.performance.test.util.io.FileUtil.createDirectory;
+
 public class StopWatchUtil {
+    public enum Helper {
+        TASK_NUM_DELIMINATOR("#");
+
+        private final String value;
+
+        Helper(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return this.value;
+        }
+    }
 
     public static void exportCsv(StopWatch stopWatch, String filePath) {
         Path path = Paths.get(filePath);
@@ -34,15 +48,6 @@ public class StopWatchUtil {
             System.out.println("CSV report created");
         } catch (IOException e) {
             System.err.println("Error occurred while creating CSV report " + e.getMessage());
-        }
-    }
-
-    private static void createDirectory(Path path) {
-        try {
-            Files.createDirectories(path);
-            System.out.println("Directory created successfully: " + path);
-        } catch (IOException e) {
-            System.err.println("Error creating directory: " + e.getMessage());
         }
     }
 }
