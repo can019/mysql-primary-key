@@ -1,12 +1,10 @@
 package com.github.can019.performance.test.util.stopwatch;
 
-import com.github.can019.performance.test.util.io.FileUtil;
 import org.springframework.util.StopWatch;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
