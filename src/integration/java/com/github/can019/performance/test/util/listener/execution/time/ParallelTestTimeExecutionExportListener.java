@@ -7,6 +7,8 @@ import org.springframework.util.StopWatch;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.github.can019.performance.test.util.report.ReportPath.getTestReportDirectoryPath;
+
 /**
  * Thread safe
  *  Test method 실행 전 thread safe StopWatch의 이름을 현재 teste method의 이름으로 설정.
@@ -44,12 +46,8 @@ public class ParallelTestTimeExecutionExportListener extends DefaultTestTimeExec
     }
 
     private String exportCsvPathResolver(TestContext testContext){
-        String packageName = testContext.getTestClass().getPackageName();
-        String className = testContext.getTestClass().getSimpleName();
         String csvFilePath = String.join("/",
-                "./test/reports",
-                packageName,
-                className,
+                getTestReportDirectoryPath(testContext.getTestClass()),
                 dateFormat.format(startedTime),
                 testContext.getTestMethod().getName()) + ".csv";
 
