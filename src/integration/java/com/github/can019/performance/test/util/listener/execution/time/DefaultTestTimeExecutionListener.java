@@ -17,10 +17,10 @@ public class DefaultTestTimeExecutionListener extends AbstractTestExecutionListe
 
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
-        super.beforeTestClass(testContext);
-        log.info("Running test '{testContext.getTestClass().getSimpleName() }'...");
+        log.info("Running test '{}'...",testContext.getTestClass().getSimpleName());
         totalTaskStopWatch = new StopWatch(testContext.getTestClass().getSimpleName()+ " Total");
         totalTaskStopWatch.start("Total");
+        super.beforeTestClass(testContext);
     }
 
     @Override
